@@ -1,178 +1,125 @@
 <!DOCTYPE html>
-<html lang="uz" class="dark">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Sniper Signal - Antigravity Edition</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Trading Sniper Signal - Antigravity</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        glassBg: 'rgba(15, 23, 42, 0.85)',
-                        glassBorder: 'rgba(255, 255, 255, 0.12)',
-                        brand: '#00F0FF',
-                        razgon: '#FF00FF',
-                        bullish: '#00E676',
-                        bearish: '#FF1744',
-                        muted: '#94A3B8'
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Lightweight Charts -->
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-    
-    <!-- FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background: radial-gradient(circle at 50% 20%, #0a1325 0%, #020617 100%);
+            background: #020617;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
             height: 100vh;
             overflow: hidden;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
         }
-        .glass-panel {
+        .glass {
             background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-        }
-        .razgon-glow {
-            animation: razgonPulse 2s infinite alternate;
-        }
-        @keyframes razgonPulse {
-            from { box-shadow: 0 0 15px rgba(255,0,255,0.4); }
-            to   { box-shadow: 0 0 35px rgba(255,0,255,0.8); }
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col">
 
-    <!-- NAVBAR -->
-    <nav class="glass-panel h-16 flex items-center justify-between px-6 text-white">
+    <!-- Navbar -->
+    <nav class="glass h-14 flex items-center px-6 border-b border-gray-700">
         <div class="flex items-center gap-3">
-            <i class="fa-solid fa-crosshairs text-3xl text-brand"></i>
-            <div class="leading-none">
-                <span class="text-xs tracking-[2px] text-muted">TRADING SNIPER SIGNAL</span>
-                <span class="text-2xl font-black bg-gradient-to-r from-brand to-razgon bg-clip-text text-transparent">ANTIGRAVITY</span>
-            </div>
+            <i class="fa-solid fa-crosshairs text-2xl text-cyan-400"></i>
+            <span class="text-xl font-bold tracking-wider">ANTIGRAVITY</span>
         </div>
-
-        <!-- Market Tabs -->
-        <div class="flex bg-black/50 p-1 rounded-2xl border border-glassBorder">
-            <button data-market="forex" class="market-tab active px-6 py-2 rounded-xl text-sm font-semibold">Forex</button>
-            <button data-market="crypto" class="market-tab px-6 py-2 rounded-xl text-sm font-semibold text-muted">Crypto</button>
-            <button data-market="synthetic" class="market-tab px-6 py-2 rounded-xl text-sm font-semibold text-muted">Synthetic</button>
-            <button data-market="stocks" class="market-tab px-6 py-2 rounded-xl text-sm font-semibold text-muted">Aksiyalar</button>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <select id="symbol-select" class="bg-black/70 border border-glassBorder rounded-xl px-4 py-2 text-sm font-mono"></select>
-            
-            <div class="flex bg-black/50 rounded-2xl p-1 border border-glassBorder">
-                <button data-tf="M15" class="tf-tab active px-4 py-1.5 rounded-xl text-xs font-bold">M15</button>
-                <button data-tf="H1" class="tf-tab px-4 py-1.5 rounded-xl text-xs font-bold text-muted">H1</button>
-                <button data-tf="H4" class="tf-tab px-4 py-1.5 rounded-xl text-xs font-bold text-muted">H4</button>
-            </div>
-
-            <button id="lang-toggle" class="px-4 py-2 text-sm font-bold border border-glassBorder rounded-xl hover:border-brand transition-colors">EN / UZ</button>
-            
-            <button id="scan-btn" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-black font-bold rounded-2xl flex items-center gap-2 transition-all">
-                <i class="fa-solid fa-bolt"></i> 
-                <span>Scan Market</span>
-            </button>
+        <div class="ml-auto flex gap-6 text-sm">
+            <button onclick="changeMarket('forex')" class="hover:text-cyan-400">Forex</button>
+            <button onclick="changeMarket('crypto')" class="hover:text-cyan-400">Crypto</button>
+            <button onclick="changeMarket('synthetic')" class="hover:text-cyan-400">Synthetic</button>
+            <button onclick="changeMarket('stocks')" class="hover:text-cyan-400">Aksiyalar</button>
         </div>
     </nav>
 
-    <div class="flex flex-1 gap-4 overflow-hidden">
-        
-        <!-- LEFT SIDEBAR - STRATEGIES -->
-        <aside class="w-80 glass-panel flex flex-col overflow-hidden">
-            <div class="p-5 border-b border-glassBorder">
-                <h2 class="text-lg font-bold flex items-center gap-2 text-brand">
-                    <i class="fa-solid fa-microchip"></i> Algo Engine
-                </h2>
-            </div>
-            <div class="p-4 flex-1 overflow-y-auto space-y-3" id="strategies-list">
-                <!-- JS orqali to'ldiriladi -->
-            </div>
-        </aside>
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Left Sidebar -->
+        <div class="w-72 glass border-r border-gray-700 p-4 overflow-y-auto">
+            <h2 class="font-bold mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-microchip"></i> Strategiyalar
+            </h2>
+            <div id="strategies" class="space-y-3 text-sm"></div>
+        </div>
 
-        <!-- CENTER - BIG CHART -->
-        <main class="flex-1 glass-panel flex flex-col relative overflow-hidden">
-            <div id="chart-container" class="flex-1 w-full"></div>
-        </main>
+        <!-- Main Chart -->
+        <div class="flex-1 flex flex-col">
+            <div id="chart" class="flex-1"></div>
+        </div>
 
-        <!-- RIGHT TERMINAL -->
-        <aside class="w-80 glass-panel flex flex-col">
-            <div class="p-5 border-b border-glassBorder">
-                <h2 class="font-bold text-lg flex items-center gap-2">
-                    <i class="fa-solid fa-terminal text-brand"></i> Terminal
-                </h2>
-                <div class="mt-4 grid grid-cols-2 gap-3">
-                    <div class="bg-black/60 p-4 rounded-2xl text-center">
-                        <div class="text-xs text-muted">Equity</div>
-                        <div id="demo-equity" class="text-2xl font-mono font-bold text-white">$10,000</div>
-                    </div>
-                    <div class="bg-black/60 p-4 rounded-2xl text-center">
-                        <div class="text-xs text-muted">Open P/L</div>
-                        <div id="demo-pl" class="text-2xl font-mono font-bold">$0.00</div>
-                    </div>
+        <!-- Right Panel -->
+        <div class="w-80 glass border-l border-gray-700 p-4 flex flex-col">
+            <h2 class="font-bold mb-4">Demo Hisob</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="text-xs text-gray-400">Balans</div>
+                    <div id="balance" class="text-3xl font-mono font-bold">$10,000</div>
                 </div>
-                <button id="execute-btn" class="mt-6 w-full py-3 bg-brand text-black font-bold rounded-2xl text-sm hover:brightness-110 transition">
-                    Execute Latest Signal
+                <button onclick="executeTrade()" 
+                        class="w-full py-3 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-xl">
+                    Signalni Ijro Etish
                 </button>
             </div>
             
-            <div class="flex border-b border-glassBorder text-sm">
-                <button onclick="switchTab(0)" class="flex-1 py-3 font-semibold border-b-2 border-brand tab-btn">Portfolio</button>
-                <button onclick="switchTab(1)" class="flex-1 py-3 font-semibold text-muted tab-btn">Log</button>
+            <div class="mt-auto pt-6">
+                <h3 class="text-sm font-bold mb-2">Neural Analyzer</h3>
+                <div id="dropzone" 
+                     class="border-2 border-dashed border-gray-600 rounded-2xl h-32 flex items-center justify-center text-center text-sm cursor-pointer hover:border-cyan-400">
+                    Skrinshotni shu yerga tashlang
+                </div>
             </div>
-            
-            <div id="tab-content-0" class="flex-1 p-4 overflow-y-auto"></div>
-            <div id="tab-content-1" class="hidden flex-1 p-4 overflow-y-auto"></div>
-        </aside>
-    </div>
-
-    <!-- NEURAL ANALYZER -->
-    <div class="glass-panel h-52 p-5">
-        <h3 class="font-bold text-lg flex items-center gap-2 mb-3">
-            <i class="fa-solid fa-brain text-razgon"></i> Neural Vision Analyzer
-        </h3>
-        <div id="dropzone" class="border-2 border-dashed border-gray-600 rounded-3xl h-36 flex flex-col items-center justify-center cursor-pointer hover:border-brand transition-colors">
-            <i class="fa-solid fa-image text-4xl text-gray-500 mb-2"></i>
-            <p class="text-sm text-gray-400">Drag & drop yoki click qilib skrinshot yuklang</p>
         </div>
-        <input type="file" id="file-input" accept="image/*" class="hidden">
     </div>
 
     <script>
-        // Bu yerga keyingi bosqichda to'liq JavaScript qo'yamiz
-        console.log("✅ Antigravity Edition - 1-bosqich yuklandi");
-        
-        // Temporary message
-        document.getElementById('strategies-list').innerHTML = `
-            <div class="p-6 text-center text-gray-400">
-                <i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i><br>
-                Strategiyalar yuklanmoqda... (2-bosqichda to'liq bo'ladi)
-            </div>
-        `;
+        // Simple demo - keyingi bosqichlarda to'liq kod qo'shiladi
+        console.log("✅ Antigravity Edition yuklandi (Railway versiyasi)");
+
+        // Tailwind scriptni ishga tushirish uchun
+        document.documentElement.classList.add('dark');
+
+        // Temporary chart
+        let chart;
+        function initChart() {
+            const container = document.getElementById('chart');
+            chart = LightweightCharts.createChart(container, {
+                width: container.clientWidth,
+                height: 500,
+                layout: { background: { color: '#020617' }, textColor: '#64748b' }
+            });
+            const series = chart.addCandlestickSeries();
+            series.setData([
+                { time: '2024-01-01', open: 100, high: 105, low: 98, close: 102 },
+                { time: '2024-01-02', open: 102, high: 108, low: 101, close: 106 }
+            ]);
+        }
+
+        window.onload = () => {
+            initChart();
+            document.getElementById('strategies').innerHTML = `
+                <div class="p-3 bg-black/30 rounded-xl">ICT Order Block</div>
+                <div class="p-3 bg-black/30 rounded-xl">Razgon Strategy</div>
+                <div class="p-3 bg-black/30 rounded-xl">EMA Cross</div>
+            `;
+        };
+
+        function changeMarket(market) {
+            alert(market + " bozori tanlandi (keyingi bosqichda to'liq ishlaydi)");
+        }
+
+        function executeTrade() {
+            alert("✅ Signal ijro etildi! Demo hisob yangilandi.");
+        }
     </script>
 </body>
 </html>
