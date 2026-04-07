@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 
     <style>
@@ -21,105 +20,78 @@
             overflow: hidden;
         }
         .glass {
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
     </style>
 </head>
 <body class="flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="glass h-14 flex items-center px-6 border-b border-gray-700">
+    <nav class="glass h-16 flex items-center px-8 border-b border-gray-700">
         <div class="flex items-center gap-3">
-            <i class="fa-solid fa-crosshairs text-2xl text-cyan-400"></i>
-            <span class="text-xl font-bold tracking-wider">ANTIGRAVITY</span>
+            <i class="fa-solid fa-crosshairs text-3xl text-cyan-400"></i>
+            <span class="text-2xl font-bold tracking-wider text-white">ANTIGRAVITY</span>
         </div>
-        <div class="ml-auto flex gap-6 text-sm">
-            <button onclick="changeMarket('forex')" class="hover:text-cyan-400">Forex</button>
-            <button onclick="changeMarket('crypto')" class="hover:text-cyan-400">Crypto</button>
-            <button onclick="changeMarket('synthetic')" class="hover:text-cyan-400">Synthetic</button>
-            <button onclick="changeMarket('stocks')" class="hover:text-cyan-400">Aksiyalar</button>
+        <div class="ml-auto text-sm font-medium flex gap-8">
+            <a href="#" class="hover:text-cyan-400">Forex</a>
+            <a href="#" class="hover:text-cyan-400">Crypto</a>
+            <a href="#" class="hover:text-cyan-400">Synthetic</a>
+            <a href="#" class="hover:text-cyan-400">Aksiyalar</a>
         </div>
     </nav>
 
-    <div class="flex flex-1 overflow-hidden">
-        <!-- Left Sidebar -->
-        <div class="w-72 glass border-r border-gray-700 p-4 overflow-y-auto">
-            <h2 class="font-bold mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-microchip"></i> Strategiyalar
-            </h2>
-            <div id="strategies" class="space-y-3 text-sm"></div>
-        </div>
-
-        <!-- Main Chart -->
-        <div class="flex-1 flex flex-col">
-            <div id="chart" class="flex-1"></div>
+    <div class="flex flex-1 p-4 gap-4 overflow-hidden">
+        <!-- Chart -->
+        <div class="flex-1 glass rounded-3xl p-4">
+            <div id="chart" class="w-full h-full rounded-2xl"></div>
         </div>
 
         <!-- Right Panel -->
-        <div class="w-80 glass border-l border-gray-700 p-4 flex flex-col">
-            <h2 class="font-bold mb-4">Demo Hisob</h2>
-            <div class="space-y-4">
-                <div>
-                    <div class="text-xs text-gray-400">Balans</div>
-                    <div id="balance" class="text-3xl font-mono font-bold">$10,000</div>
-                </div>
-                <button onclick="executeTrade()" 
-                        class="w-full py-3 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-xl">
-                    Signalni Ijro Etish
-                </button>
-            </div>
+        <div class="w-96 glass rounded-3xl p-6 flex flex-col">
+            <h2 class="text-xl font-bold mb-6">Demo Hisob</h2>
+            <div class="text-4xl font-mono font-bold mb-8" id="balance">$10,000.00</div>
             
-            <div class="mt-auto pt-6">
-                <h3 class="text-sm font-bold mb-2">Neural Analyzer</h3>
-                <div id="dropzone" 
-                     class="border-2 border-dashed border-gray-600 rounded-2xl h-32 flex items-center justify-center text-center text-sm cursor-pointer hover:border-cyan-400">
-                    Skrinshotni shu yerga tashlang
-                </div>
+            <button onclick="executeSignal()" 
+                    class="w-full py-4 bg-cyan-500 hover:bg-cyan-600 text-black font-bold text-lg rounded-2xl transition">
+                Signalni Ijro Etish
+            </button>
+
+            <div class="mt-auto pt-8">
+                <p class="text-xs text-gray-400 text-center">Railway versiyasi yuklandi</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Simple demo - keyingi bosqichlarda to'liq kod qo'shiladi
-        console.log("✅ Antigravity Edition yuklandi (Railway versiyasi)");
-
-        // Tailwind scriptni ishga tushirish uchun
-        document.documentElement.classList.add('dark');
-
-        // Temporary chart
         let chart;
         function initChart() {
             const container = document.getElementById('chart');
             chart = LightweightCharts.createChart(container, {
                 width: container.clientWidth,
-                height: 500,
-                layout: { background: { color: '#020617' }, textColor: '#64748b' }
+                height: container.clientHeight,
+                layout: { background: { color: '#0a1325' }, textColor: '#64748b' },
+                grid: { vertLines: { color: '#1e2937' }, horzLines: { color: '#1e2937' } }
             });
             const series = chart.addCandlestickSeries();
             series.setData([
-                { time: '2024-01-01', open: 100, high: 105, low: 98, close: 102 },
-                { time: '2024-01-02', open: 102, high: 108, low: 101, close: 106 }
+                { time: '2025-04-01', open: 2340, high: 2360, low: 2330, close: 2355 },
+                { time: '2025-04-02', open: 2355, high: 2380, low: 2345, close: 2372 },
+                { time: '2025-04-03', open: 2372, high: 2390, low: 2360, close: 2378 }
             ]);
+        }
+
+        function executeSignal() {
+            alert("✅ Signal ijro etildi!\nDemo hisob yangilandi.");
+            const balanceEl = document.getElementById('balance');
+            balanceEl.textContent = "$10,450.00";
+            balanceEl.style.color = "#00E676";
         }
 
         window.onload = () => {
             initChart();
-            document.getElementById('strategies').innerHTML = `
-                <div class="p-3 bg-black/30 rounded-xl">ICT Order Block</div>
-                <div class="p-3 bg-black/30 rounded-xl">Razgon Strategy</div>
-                <div class="p-3 bg-black/30 rounded-xl">EMA Cross</div>
-            `;
+            console.log("✅ Trading Sniper Signal Antigravity - Railway versiyasi ishga tushdi");
         };
-
-        function changeMarket(market) {
-            alert(market + " bozori tanlandi (keyingi bosqichda to'liq ishlaydi)");
-        }
-
-        function executeTrade() {
-            alert("✅ Signal ijro etildi! Demo hisob yangilandi.");
-        }
     </script>
 </body>
 </html>
